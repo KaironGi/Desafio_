@@ -3,6 +3,8 @@
 
 import json
 
+# Coloquei o JSON dentro de uma string para conseguir trabalhar
+# com os dados usando o modulo json do Python
 dados_json = '''
 {
     "vendas": [
@@ -49,15 +51,21 @@ dados_json = '''
 }
 '''
 
+# Transformo o JSON em um dicionario Python para conseguir acessar
+# os dados normalmente
 dados = json.loads(dados_json)
 
+# Aqui vou guardar a comissao total de cada vendedor
+# O nome do vendedor sera a chave e a comissao sera o valor
 comissoes = {}
+
 
 for venda in dados["vendas"]:
 
     vendedor = venda["vendedor"]
     valor = venda["valor"]
 
+    # A porcentagem depende do valor de cada venda
     if valor < 100:
         comissao = 0
 
@@ -66,16 +74,18 @@ for venda in dados["vendas"]:
 
     else:
         comissao = valor * 0.05
-
+    # Se for a primeira venda desse vendedor, crio ele no dicionario
     if vendedor not in comissoes:
         comissoes[vendedor] = 0
 
+    # Somo a comissao dessa venda com as comissoes anteriores
     comissoes[vendedor] += comissao
 
 
 print("COMISSAO DOS VENDEDORES")
 print("-" * 30)
 
+# Mostro o total de comissao de cada vendedor
 for vendedor, comissao in comissoes.items():
     print(f"{vendedor}: R$ {comissao:.2f}")
 
@@ -85,6 +95,7 @@ for vendedor, comissao in comissoes.items():
 
 import json
 
+# Dados iniciais do estoque
 dados_estoque = '''
 {
     "estoque": [
@@ -121,24 +132,31 @@ dados = json.loads(dados_estoque)
 
 estoque = dados["estoque"]
 
+# Comeco o ID em 1 e incremento a cada movimentacao realizada
 id_movimentacao = 1
 
 
 def encontrar_produto(codigo):
+    # Procuro o produto pelo codigo informado pelo usuario
     for produto in estoque:
 
         if produto["codigoProduto"] == codigo:
             return produto
 
+    # Se nao encontrar nenhum produto com esse codigo
+    # retorno None para tratar isso depois
     return None
 
 
+# O programa continua executando ate o usuario escolher 0
 while True:
 
     print("\n===== MOVIMENTACAO DE ESTOQUE =====")
 
     print("\nProdutos disponiveis:")
 
+    # Mostro os produtos antes de pedir o codigo para facilitar
+    # a escolha de quem estiver usando o programa
     for produto in estoque:
 
         print(
@@ -146,11 +164,12 @@ while True:
             f'{produto["descricaoProduto"]} - '
             f'Estoque: {produto["estoque"]}'
         )
+
     print("\nDigite 0 para sair.")
+
     codigo = int(input("\nCodigo do produto: "))
 
-    
-
+    # O zero serve para encerrar o programa
     if codigo == 0:
         break
 
@@ -164,7 +183,7 @@ while True:
     print("2 - Saida")
 
     tipo = input("Tipo da movimentacao: ")
-
+    # Aceito somente as opcoes de entrada ou saida
     if tipo != "1" and tipo != "2":
 
         print("Tipo de movimentacao invalido.")
@@ -174,22 +193,27 @@ while True:
 
     quantidade = int(input("Quantidade: "))
 
+    # Nao faz sentido permitir uma movimentacao com quantidade
+    # igual ou menor que zero
     if quantidade <= 0:
 
         print("A quantidade deve ser maior que zero.")
         continue
 
+    # Entrada aumenta a quantidade do estoque
     if tipo == "1":
 
         produto["estoque"] += quantidade
 
     else:
 
+        # Antes de retirar, verifico se existe quantidade suficiente
         if quantidade > produto["estoque"]:
 
             print("Erro: estoque insuficiente.")
             continue
 
+        # Saida diminui a quantidade do estoqu
         produto["estoque"] -= quantidade
 
     print("\nMovimentacao realizada com sucesso!")
@@ -198,6 +222,7 @@ while True:
     print(f"Produto: {produto['descricaoProduto']}")
     print(f"Estoque final: {produto['estoque']}")
 
+    # Incremento o ID para a proxima movimentacao
     id_movimentacao += 1
 
 
@@ -207,22 +232,28 @@ while True:
 from datetime import datetime
 
 
+# Primeiro pego o valor da conta informado pelo usuario
 valor = float(
     input("Digite o valor da conta: R$ ")
 )
 
+# A data sera informada no formato brasileiro
 data_vencimento = input(
     "Digite a data de vencimento (dd/mm/aaaa): "
 )
 
+# Converto a string digitada para uma data que o Python consiga
+# usar nos calculos
 data_vencimento = datetime.strptime(
     data_vencimento,
     "%d/%m/%Y"
 ).date()
 
+# Pego a data atual do computador
 data_hoje = datetime.today().date()
 
 
+# Se hoje for antes ou igual ao vencimento, nao existe atraso
 if data_hoje <= data_vencimento:
 
     print("\nA conta ainda nao esta atrasada.")
@@ -231,18 +262,24 @@ if data_hoje <= data_vencimento:
 
 else:
 
+    # Subtraindo as duas datas consigo descobrir quantos dias
+    # a conta esta atrasada
     dias_atraso = (
         data_hoje - data_vencimento
     ).days
 
+    # A taxa informada no exercicio e de 2,5% ao dia
     taxa_diaria = 0.025
 
+    # Calculo dos juros simples considerando a quantidade
+    # de dias de atraso
     juros = (
         valor
         * taxa_diaria
         * dias_atraso
     )
 
+    # Somo os juros ao valor original da conta
     valor_final = valor + juros
 
     print("\n===== CALCULO DE JUROS =====")
@@ -266,4 +303,3 @@ else:
     print(
         f"Valor final: R$ {valor_final:.2f}"
     )
-# %%
